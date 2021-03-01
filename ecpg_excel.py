@@ -52,15 +52,22 @@ if got_error != True :
     if CRQ_no == '':
         CRQ_no = input("Enter CRQ Number:")
     new_file_name = dest_location + '\\CRQ_' + CRQ_no + '_ECPG_Element_list.xls'
+    if os.path.isfile(new_file_name):
+        print("File exists, Deleting File")
+        os.remove(new_file_name)
     newPath = shutil.copy(base_file, dest_location)
     os.rename(newPath, new_file_name)
+    print("File Created")
+    
     
     import xlwings as xw
     wb = xw.Book(new_file_name)
     sht = wb.sheets['Element List']
     y = dataframe_array.iloc[:,:].values
     sht.range('A3').value = y
-    #wb.save()
     #wb.macro('Validate')
-    #wb.set_mock_caller()
-    #print(dataframe_array.iloc[:,:].values )
+    your_macro = wb.macro('ValidateElementList')
+    print(your_macro)
+    your_macro()
+    wb.save()
+    #wb.close()
